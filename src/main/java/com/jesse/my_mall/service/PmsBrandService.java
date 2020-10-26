@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by jesse on 2020/10/26 下午1:33
  */
-@Service
+
 public interface PmsBrandService {
     List<PmsBrand> listAllBrand();
 

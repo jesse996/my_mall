@@ -5,6 +5,7 @@ import com.jesse.my_mall.service.RedisService;
 import com.jesse.my_mall.service.UmsMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Random;
@@ -12,6 +13,7 @@ import java.util.Random;
 /**
  * Created by jesse on 2020/10/26 下午4:43
  */
+@Service
 public class UmsMemberServiceImpl implements UmsMemberService {
     @Autowired
     private RedisService redisService;

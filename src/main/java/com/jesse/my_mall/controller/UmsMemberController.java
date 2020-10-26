@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by jesse on 2020/10/26 下午4:39
  */
-@Controller
+@RestController
 @Api(tags = {"会员登录注册管理"})
 @RequestMapping("/sso")
 public class UmsMemberController {
