@@ -1,8 +1,11 @@
 package com.jesse.my_mall.common.api;
 
+import lombok.Data;
+
 /**
  * Created by jesse on 2020/10/26 下午1:40
  */
+@Data
 public class CommonResult<T> {
     private long code;
     private String message;

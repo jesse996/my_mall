@@ -5,6 +5,7 @@ import com.jesse.my_mall.common.api.CommonResult;
 import com.jesse.my_mall.mbg.model.PmsBrand;
 import com.jesse.my_mall.service.PmsBrandService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/brand")
 public class PmsBrandController {
+    @Autowired
     private PmsBrandService pmsBrandService;
 
     @GetMapping("/listAll")
