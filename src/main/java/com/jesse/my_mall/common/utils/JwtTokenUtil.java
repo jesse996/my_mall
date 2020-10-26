@@ -1,5 +1,10 @@
 package com.jesse.my_mall.common.utils;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.UUID;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.MD5;
 import cn.hutool.json.JSONUtil;
 import com.jesse.my_mall.dto.PayloadDto;
 import com.nimbusds.jose.*;
@@ -9,19 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by jesse on 2020/10/26 下午5:19
  */
+@Component
 public class JwtTokenUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenUtil.class);
-    private static final String CLAIM_KEY_USERNAME = "sub";
-    private static final String CLAIM_KEY_CREATED = "created";
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.expiration}")
@@ -66,5 +69,30 @@ public class JwtTokenUtil {
         return payloadDto;
     }
 
+    /**
+     * 根据用户信息生成token
+     */
+    public String generateToken(UserDetails userDetails) throws JOSEException {
+//        Map<String, Object> claims = new HashMap<>();
+//        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+//        claims.put(CLAIM_KEY_CREATED, new Date());
+//        return generateToken(claims);
+        String username = userDetails.getUsername();
+        PayloadDto payloadDto = getDefaultPayloadDto();
+        payloadDto.setUsername(username);
+        return generateToken(JSONUtil.toJsonStr(payloadDto), SecureUtil.md5(secret));
+    }
 
+    public PayloadDto getDefaultPayloadDto() {
+        Date now = new Date();
+        Date exp = DateUtil.offsetSecond(now, 60 * 60);
+        return PayloadDto.builder()
+                .sub("mall")
+                .iat(now.getTime())
+                .exp(exp.getTime())
+                .jti(UUID.randomUUID().toString())
+                .username("jesse")
+                .authorities(CollUtil.toList("ADMIN"))
+                .build();
+    }
 }
