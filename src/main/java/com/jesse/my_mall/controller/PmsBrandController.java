@@ -19,7 +19,7 @@ import java.util.List;
 public class PmsBrandController {
     private PmsBrandService pmsBrandService;
 
-    @GetMapping("/listALl")
+    @GetMapping("/listAll")
     public CommonResult<List<PmsBrand>> getBrandList() {
         return CommonResult.success(pmsBrandService.listAllBrand());
     }
