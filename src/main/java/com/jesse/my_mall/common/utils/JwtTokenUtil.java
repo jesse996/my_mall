@@ -26,14 +26,15 @@ import java.util.Date;
 public class JwtTokenUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenUtil.class);
     @Value("${jwt.secret}")
-    private String secret;
+    private String rawSecret;
+    private final String secret = SecureUtil.md5(this.secret);
     @Value("${jwt.expiration}")
     private Long expiration;
 
     /**
      * 根据负责生成JWT的token
      */
-    private String generateToken(String payloadStr, String secret) throws JOSEException {
+    private String generateToken(String payloadStr) throws JOSEException {
         //创建JWS头，设置签名算法和类型
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.HS256).
                 type(JOSEObjectType.JWT)
@@ -52,7 +53,7 @@ public class JwtTokenUtil {
     /**
      * 验证token并返回payload
      */
-    public PayloadDto verifyTokenByHMAC(String token, String secret) throws Exception {
+    public PayloadDto verifyTokenByHMAC(String token) throws Exception {
         //从token中解析JWS对象
         JWSObject jwsObject = JWSObject.parse(token);
         //创建HMAC验证器
@@ -73,14 +74,10 @@ public class JwtTokenUtil {
      * 根据用户信息生成token
      */
     public String generateToken(UserDetails userDetails) throws JOSEException {
-//        Map<String, Object> claims = new HashMap<>();
-//        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
-//        claims.put(CLAIM_KEY_CREATED, new Date());
-//        return generateToken(claims);
         String username = userDetails.getUsername();
         PayloadDto payloadDto = getDefaultPayloadDto();
         payloadDto.setUsername(username);
-        return generateToken(JSONUtil.toJsonStr(payloadDto), SecureUtil.md5(secret));
+        return generateToken(JSONUtil.toJsonStr(payloadDto));
     }
 
     public PayloadDto getDefaultPayloadDto() {

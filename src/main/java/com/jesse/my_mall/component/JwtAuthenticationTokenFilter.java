@@ -1,6 +1,9 @@
 package com.jesse.my_mall.component;
 
 import com.jesse.my_mall.common.utils.JwtTokenUtil;
+import com.jesse.my_mall.dto.PayloadDto;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +25,8 @@ import java.io.IOException;
  * JWT登录授权过滤器
  * Created by jesse on 2020/10/26 下午5:35
  */
+@Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationTokenFilter.class);
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
@@ -33,25 +36,25 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
+    @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain chain) throws ServletException, IOException {
+                                    FilterChain chain) {
         String authHeader = request.getHeader(this.tokenHeader);
-//        if (authHeader != null && authHeader.startsWith(this.tokenHead)) {
-//            String authToken = authHeader.substring(this.tokenHead.length());// The part after "Bearer "
-//            String username = jwtTokenUtil.getUserNameFromToken(authToken);
-//            LOGGER.info("checking username:{}", username);
-//            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-//                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-//                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                    LOGGER.info("authenticated user:{}", username);
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//                }
-//            }
-//        }
+        if (authHeader != null && authHeader.startsWith(this.tokenHead)) {
+            String authToken = authHeader.substring(this.tokenHead.length());// The part after "Bearer "
+            PayloadDto payloadDto = jwtTokenUtil.verifyTokenByHMAC(authToken);
+            String username = payloadDto.getUsername();
+            log.info("checking username:{}", username);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                log.info("authenticated user:{}", username);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
         chain.doFilter(request, response);
     }
 }
