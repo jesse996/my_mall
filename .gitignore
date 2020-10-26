@@ -31,6 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
-#
+#自定义
 .attach_*
 mvnw*
+.mvn/
