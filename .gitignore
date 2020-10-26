@@ -31,4 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+#
 .attach_*
+mvnw*
