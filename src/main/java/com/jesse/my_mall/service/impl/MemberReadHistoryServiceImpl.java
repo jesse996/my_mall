@@ -4,6 +4,7 @@ import com.jesse.my_mall.nosql.mongo.document.MemberReadHistory;
 import com.jesse.my_mall.nosql.mongo.repository.MemberReadHistoryRepository;
 import com.jesse.my_mall.service.MemberReadHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * Created by jesse on 2020/10/27 下午12:28
  */
+@Service
 public class MemberReadHistoryServiceImpl implements MemberReadHistoryService {
     @Autowired
     private MemberReadHistoryRepository memberReadHistoryRepository;
