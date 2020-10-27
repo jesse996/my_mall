@@ -62,7 +62,7 @@ public class EsProductController {
                                                       @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                       @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Page<EsProduct> esProductPage = esProductService.search(keyword, pageNum, pageSize);
-        return CommonResult.success(CommonPage.restPage((List<EsProduct>) esProductPage));
+        return CommonResult.success(CommonPage.restPage( esProductPage));
     }
 
 }
